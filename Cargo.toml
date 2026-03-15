@@ -1,0 +1,3 @@
+[workspace]
+members = ["contracts/chronopay"]
+resolver = "2"
