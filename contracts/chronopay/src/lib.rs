@@ -1,7 +1,9 @@
 #![no_std]
 //! ChronoPay time token contract — stub for create_time_slot, mint_time_token, buy_time_token, redeem_time_token.
 
-use soroban_sdk::{contract, contractimpl, contracttype, vec, Env, String, Symbol, Vec};
+use soroban_sdk::{
+    contract, contracterror, contractimpl, contracttype, vec, Env, String, Symbol, Vec,
+};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -15,8 +17,24 @@ pub enum TimeTokenStatus {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum DataKey {
     SlotSeq,
+    TimeSlot(u32),
     Owner,
     Status,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TimeSlot {
+    pub professional: String,
+    pub start_time: u64,
+    pub end_time: u64,
+}
+
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[repr(u32)]
+pub enum ContractError {
+    EndTimeBeforeStartTime = 1,
 }
 
 #[contract]
@@ -26,8 +44,23 @@ pub struct ChronoPayContract;
 impl ChronoPayContract {
     /// Create a time slot with an auto-incrementing slot id.
     /// Returns the newly assigned slot id.
-    pub fn create_time_slot(env: Env, professional: String, start_time: u64, end_time: u64) -> u32 {
-        let _ = (professional, start_time, end_time);
+    ///
+    /// # Arguments
+    /// * `professional` - Identifier for the professional offering the time slot
+    /// * `start_time` - Unix timestamp for slot start time
+    /// * `end_time` - Unix timestamp for slot end time
+    ///
+    /// # Errors
+    /// Returns `ContractError::EndTimeBeforeStartTime` if `end_time <= start_time`.
+    pub fn create_time_slot(
+        env: Env,
+        professional: String,
+        start_time: u64,
+        end_time: u64,
+    ) -> Result<u32, ContractError> {
+        if end_time <= start_time {
+            return Err(ContractError::EndTimeBeforeStartTime);
+        }
 
         let current_seq: u32 = env
             .storage()
@@ -35,15 +68,21 @@ impl ChronoPayContract {
             .get(&DataKey::SlotSeq)
             .unwrap_or(0u32);
 
-        let next_seq = current_seq
-            .checked_add(1)
-            .expect("slot id overflow");
+        let next_seq = current_seq.checked_add(1).expect("slot id overflow");
+
+        let time_slot = TimeSlot {
+            professional: professional.clone(),
+            start_time,
+            end_time,
+        };
+
+        env.storage().instance().set(&DataKey::SlotSeq, &next_seq);
 
         env.storage()
             .instance()
-            .set(&DataKey::SlotSeq, &next_seq);
+            .set(&DataKey::TimeSlot(next_seq), &time_slot);
 
-        next_seq
+        Ok(next_seq)
     }
 
     /// Mint a time token for a slot (stub).

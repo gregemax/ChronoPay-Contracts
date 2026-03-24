@@ -6,8 +6,6 @@
   },
   "auth": [
     [],
-    [],
-    [],
     []
   ],
   "ledger": {
@@ -44,7 +42,7 @@
                         ]
                       },
                       "val": {
-                        "u32": 3
+                        "u32": 1
                       }
                     },
                     {
@@ -65,7 +63,7 @@
                               "symbol": "end_time"
                             },
                             "val": {
-                              "u64": "2000"
+                              "u64": "2000000000"
                             }
                           },
                           {
@@ -73,7 +71,7 @@
                               "symbol": "professional"
                             },
                             "val": {
-                              "string": "professional_alice"
+                              "string": "professional_eve"
                             }
                           },
                           {
@@ -81,87 +79,7 @@
                               "symbol": "start_time"
                             },
                             "val": {
-                              "u64": "1000"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "vec": [
-                          {
-                            "symbol": "TimeSlot"
-                          },
-                          {
-                            "u32": 2
-                          }
-                        ]
-                      },
-                      "val": {
-                        "map": [
-                          {
-                            "key": {
-                              "symbol": "end_time"
-                            },
-                            "val": {
-                              "u64": "4000"
-                            }
-                          },
-                          {
-                            "key": {
-                              "symbol": "professional"
-                            },
-                            "val": {
-                              "string": "professional_alice"
-                            }
-                          },
-                          {
-                            "key": {
-                              "symbol": "start_time"
-                            },
-                            "val": {
-                              "u64": "3000"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "key": {
-                        "vec": [
-                          {
-                            "symbol": "TimeSlot"
-                          },
-                          {
-                            "u32": 3
-                          }
-                        ]
-                      },
-                      "val": {
-                        "map": [
-                          {
-                            "key": {
-                              "symbol": "end_time"
-                            },
-                            "val": {
-                              "u64": "6000"
-                            }
-                          },
-                          {
-                            "key": {
-                              "symbol": "professional"
-                            },
-                            "val": {
-                              "string": "professional_alice"
-                            }
-                          },
-                          {
-                            "key": {
-                              "symbol": "start_time"
-                            },
-                            "val": {
-                              "u64": "5000"
+                              "u64": "1000000000"
                             }
                           }
                         ]
