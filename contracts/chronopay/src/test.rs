@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use soroban_sdk::{vec, Env, String, Address, testutils::Address as _};
+use soroban_sdk::{testutils::Address as _, vec, Address, Env, String};
 
 // -----------------------------------------------------------------------
 // Helpers
@@ -177,11 +177,7 @@ fn test_operations_resume_after_unpause() {
     client.unpause(&admin);
 
     // Should work normally after unpause
-    let slot_id = client.create_time_slot(
-        &String::from_str(&env, "pro"),
-        &1000u64,
-        &2000u64,
-    );
+    let slot_id = client.create_time_slot(&String::from_str(&env, "pro"), &1000u64, &2000u64);
     assert_eq!(slot_id, 1);
 }
 
