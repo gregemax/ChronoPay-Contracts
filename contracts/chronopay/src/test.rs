@@ -211,5 +211,5 @@ fn test_non_admin_cannot_unpause() {
 fn test_double_initialize_panics() {
     let (env, client, _) = setup();
     let second_admin = Address::generate(&env);
-    client.initialize(&second_admin); // must panic
+    client.initialize(&second_admin); 
 }

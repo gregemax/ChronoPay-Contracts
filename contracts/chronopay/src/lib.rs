@@ -68,19 +68,15 @@ impl ChronoPayContract {
     /// Create a time slot with an auto-incrementing slot id.
     /// Returns the newly assigned slot id.
     /// Panics if contract is paused.
-    pub fn create_time_slot(env: Env, professional: String, start_time: u64, end_time: u64) -> u32 {
+   pub fn create_time_slot(env: Env, professional: String, start_time: u64, end_time: u64) -> u32 {
         Self::require_not_paused(&env);
         let _ = (professional, start_time, end_time);
 
-        let current_seq: u32 = env
-            .storage()
-            .instance()
-            .get(&DataKey::SlotSeq)
-            .unwrap_or(0u32);
+        let current_seq: u32 = env.storage().instance().get(&DataKey::SlotSeq).unwrap_or(0u32);
 
         let next_seq = current_seq.checked_add(1).expect("slot id overflow");
 
-         env.storage().instance().set(&DataKey::SlotSeq, &next_seq);
+        env.storage().instance().set(&DataKey::SlotSeq, &next_seq);
 
         next_seq
     }
