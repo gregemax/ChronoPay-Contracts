@@ -6,6 +6,8 @@
   },
   "auth": [
     [],
+    [],
+    [],
     []
   ],
   "ledger": {
@@ -37,12 +39,12 @@
                       "key": {
                         "vec": [
                           {
-                            "symbol": "Owner"
+                            "symbol": "SlotSeq"
                           }
                         ]
                       },
                       "val": {
-                        "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
+                        "u32": 3
                       }
                     }
                   ]
