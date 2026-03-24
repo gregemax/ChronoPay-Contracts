@@ -1,7 +1,7 @@
 #![cfg(test)]
 
 use super::*;
-use soroban_sdk::{vec, Env, String};
+use soroban_sdk::{vec, Env, String, Symbol};
 
 #[test]
 fn test_hello() {
@@ -59,4 +59,35 @@ fn test_mint_and_redeem() {
 
     let redeemed = client.redeem_time_token(&token);
     assert!(redeemed);
+}
+
+#[test]
+fn test_create_time_slot() {
+    let env = Env::default();
+    let contract_id = env.register(ChronoPayContract, ());
+    let client = ChronoPayContractClient::new(&env, &contract_id);
+
+    // First slot for a new professional should get id 1.
+    let slot_id = client.create_time_slot(
+        &String::from_str(&env, "professional_alice"),
+        &1000u64,
+        &2000u64,
+    );
+    assert_eq!(slot_id, 1);
+}
+
+#[test]
+fn test_buy_time_token() {
+    let env = Env::default();
+    let contract_id = env.register(ChronoPayContract, ());
+    let client = ChronoPayContractClient::new(&env, &contract_id);
+
+    // Buying any token should succeed and return true.
+    let token = Symbol::new(&env, "TIME_TOKEN");
+    let result = client.buy_time_token(
+        &token,
+        &String::from_str(&env, "buyer_bob"),
+        &String::from_str(&env, "seller_alice"),
+    );
+    assert!(result);
 }
