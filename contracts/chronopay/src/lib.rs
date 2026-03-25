@@ -1,9 +1,7 @@
 #![no_std]
 //! ChronoPay time token contract — scheduling and time tokenization.
 
-use soroban_sdk::{
-    contract, contractimpl, contracttype, vec, Address, Env, String, Symbol, Vec,
-};
+use soroban_sdk::{contract, contractimpl, contracttype, vec, Address, Env, String, Symbol, Vec};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -19,6 +17,8 @@ pub enum DataKey {
     SlotSeq,
     Slot(u32),
     ProfessionalSlots(Address),
+    Owner,
+    Status,
 }
 
 #[contracttype]
@@ -37,7 +37,12 @@ pub struct ChronoPayContract;
 impl ChronoPayContract {
     /// Create a time slot and persist it.
     /// Fails if end_time is not after start_time.
-    pub fn create_time_slot(env: Env, professional: Address, start_time: u64, end_time: u64) -> u32 {
+    pub fn create_time_slot(
+        env: Env,
+        professional: Address,
+        start_time: u64,
+        end_time: u64,
+    ) -> u32 {
         professional.require_auth();
 
         if start_time >= end_time {
@@ -52,7 +57,9 @@ impl ChronoPayContract {
             token: None,
         };
 
-        env.storage().persistent().set(&DataKey::Slot(slot_id), &slot);
+        env.storage()
+            .persistent()
+            .set(&DataKey::Slot(slot_id), &slot);
 
         // Update professional slots index
         let mut prof_slots: Vec<u32> = env
@@ -61,14 +68,13 @@ impl ChronoPayContract {
             .get(&DataKey::ProfessionalSlots(professional.clone()))
             .unwrap_or(vec![&env]);
         prof_slots.push_back(slot_id);
-        env.storage()
-            .persistent()
-            .set(&DataKey::ProfessionalSlots(professional.clone()), &prof_slots);
-
-        env.events().publish(
-            (Symbol::new(&env, "slot_created"), professional),
-            slot_id
+        env.storage().persistent().set(
+            &DataKey::ProfessionalSlots(professional.clone()),
+            &prof_slots,
         );
+
+        env.events()
+            .publish((Symbol::new(&env, "slot_created"), professional), slot_id);
 
         slot_id
     }
@@ -96,12 +102,18 @@ impl ChronoPayContract {
     /// Buy / transfer time token (stub).
     pub fn buy_time_token(env: Env, token_id: Symbol, buyer: Address, seller: Address) -> bool {
         let _ = (token_id, buyer, seller);
+        env.storage()
+            .instance()
+            .set(&DataKey::Owner, &env.current_contract_address());
         true
     }
 
     /// Redeem time token (stub).
     pub fn redeem_time_token(env: Env, token_id: Symbol) -> bool {
         let _ = token_id;
+        env.storage()
+            .instance()
+            .set(&DataKey::Status, &TimeTokenStatus::Redeemed);
         true
     }
 
