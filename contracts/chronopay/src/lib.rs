@@ -7,6 +7,26 @@ extern crate alloc;
 use alloc::format;
 use soroban_sdk::{contract, contractimpl, contracttype, vec, Address, Env, String, Symbol, Vec};
 
+/// Errors that can occur during contract execution.
+#[contracterror]
+#[derive(Clone, Debug, Eq, PartialEq, Copy)]
+#[repr(u32)]
+pub enum ChronoPayError {
+    /// The caller is not authorized to perform this operation.
+    Unauthorized = 1,
+    /// The professional is not authorized to create time slots.
+    ProfessionalNotAuthorized = 2,
+    /// The professional is already authorized.
+    AlreadyAuthorized = 3,
+    /// The professional is not found in the registry.
+    ProfessionalNotFound = 4,
+    /// Invalid input parameters provided.
+    InvalidInput = 5,
+    /// Admin operation failed.
+    AdminError = 6,
+}
+
+/// Status of a time token.
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TimeTokenStatus {
